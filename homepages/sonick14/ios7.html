@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<style>
+			body, body::before {
+				font-family: Helvetica NeueUI, Helvetica Neue, Helvetica;
+			}
+			body {
+				background-color: #F0EFF7;
+				margin: 0;
+				overflow: hidden;
+				color: #878787;
+				font-size: 2.75vh;
+				padding-top: 13vh;
+			}
+			label.lbl {
+				margin-left: 2vw;
+			}
+			label.opt {
+				display: block;
+				width: 100vw;
+				height: 8vh;
+				font-size: 3vh;
+				line-height: 8vh;
+				padding-left: 2vw;
+				position: relative;
+				background: #FFF;
+				color: #000;
+				border-top: solid 1px #888;
+			}
+			label.opt:last-of-type {
+				border-bottom: solid 1px #777;
+			}
+			label.lbl, label.opt {
+				top: 1vh;
+			}
+			label.inf {
+				color: #777;
+			}
+			body::before {
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100vw;
+				height: 10vh;
+				background: #F4F4F6;
+				border-bottom: solid 1px #E4E4E6;
+				color: black;
+				font-weight: bolder;
+				text-align: center;
+				line-height: 10vh;
+				font-size: 3.5vh;
+				content: "SoNiCk14's Homepage";
+			}
+			img.icon {
+				width: 4vh;
+				height: 4vh;
+				position: relative;
+				top: 1vh;
+				padding-right: 0.5vw;
+			}
+			label.usd {
+				position: absolute;
+				right: 3.25vw;
+			}
+			label.usd::before {
+				content: "$";
+			}
+			label.usd::after {
+				font-size: 125%;
+				content: " >";
+				color: #BBBBBC;
+			}
+			label.opt:hover {
+				background: #DEDEDE;
+			}
+		</style>
+		<script>
+			window.onload = function onload(e) {
+				var prices = [10, 9, 5],
+					usd = document.querySelectorAll('label.opt > label.usd');
+				for(var i = 0; i < usd.length; i++) {
+					usd[i].innerText = prices[i];
+					usd[i].parentElement.onclick = function onclick(e) {
+						window.open("https://www.paypal.me/sonick14/" + this.querySelector('.usd').innerText + "USD");
+					};
+				};
+			};
+		</script>
+	</head>
+	<body>
+		<label class='lbl'>iCloud bypass</label>
+		<label class='opt'>
+			<img class='icon' src='https://pbs.twimg.com/profile_images/1005120963749396487/4ufCfknL_200x200.jpg' />
+			iPad 2 bypass 
+			<label class='inf'>(4.3.5 - 9.3.5 on iPad2,x)</label>
+			<label class='usd'>${PRICE}</label>
+		</label>
+		<label class='opt'>
+			<img class='icon' src='https://pbs.twimg.com/profile_images/1005120963749396487/4ufCfknL_200x200.jpg' />
+			Wildcard bypass #1 
+			<label class='inf'>(1.0 - 7.1.1 on any device)</label>
+			<label class='usd'>${PRICE}</label>
+		</label>
+		<label class='opt'>
+			<img class='icon' src='https://pbs.twimg.com/profile_images/1005120963749396487/4ufCfknL_200x200.jpg' />
+			Wildcard bypass #2 
+			<label class='inf'>(7.0 - 7.1.2 on any device)</label>
+			<label class='usd'>${PRICE}</label>
+		</label>
+		<br/>
+		<label class='lbl'>Social Media</label>
+		<label class='opt' onclick='window.open("http://twitter.com/SoNick_14")'>
+			<img class='icon' src='https://help.twitter.com/content/dam/help-twitter/twitter-logo.png' />
+			Twitter 
+			<label class='inf'>(@SoNick_14)</label>
+		</label>
+	</body>
+</html>
