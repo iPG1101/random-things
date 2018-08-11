@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Happy Birthday Mom</title>
+</head>
+<body>
+	<canvas style='position:absolute;top:calc(10vh+3px);border: solid 1px black;width:100vw;height:20vh;background:-webkit-gradient(linear, left top, right top, from(#D1D5DE), color-stop(50%, #D1D5DE), color-stop(50%, #CED2DD), to(#CED2DD));background:-webkit-linear-gradient(left, #D1D5DE 0%, #D1D5DE 50%, #CED2DD 50%, #CED2DD 100%);background:-o-linear-gradient(left, #D1D5DE 0%, #D1D5DE 50%, #CED2DD 50%, #CED2DD 100%);background:linear-gradient(to right, #D1D5DE 0%, #D1D5DE 50%, #CED2DD 50%, #CED2DD 100%);-webkit-background-size: 1% 100%;background-size: 1% 100%; background-repeat: repeat-x;line-height:10vh'></canvas>
+	<script>
+		function Wind() {
+			this.startDelay = 1200;
+			this.velocityX = 0;
+			this.velocityY = -1;
+			this.winds = [];
+			this.getWind = function getWind(delay) {
+				if(delay) {
+					return this.winds[Math.floor(delay % this.winds.length)];
+				};
+				return {
+					x: this.velocityX,
+					y: this.velocityY
+				};
+			};
+			this.sineWave = function sineWave() {
+				return Math.sin(frames/(60*(0.9+(Math.random()/10))));
+			};
+			this.updateWind = function updateWind() {
+				this.velocityX = this.sineWave();
+				if(this.winds.length >= 100) {
+					this.winds.shift();
+				}
+				this.winds.push({x: this.velocityX, y: this.velocityY});
+			};
+		}
+		function Balloon(i) {
+			this.windDelay = i;
+			this.velocity = {x: 0, y: 0};
+			this.position = {x: Math.random() * w*0.75 + w/8, y: h+(h/6)};
+			this.initX    = this.position.x;
+			this.windMult = Math.random()/5 + 0.9;
+			this.height   = h/6;
+			this.width    = h/8;
+			this.height  *= (1/this.windMult);
+			this.width   *= (1/this.windMult);
+			this.r = Math.floor(Math.random()*127 + 128);
+			this.g = Math.floor(Math.random()*127 + 64);
+			this.b = Math.floor(Math.random()*127 + 64);
+			this.color    = `rgba(${this.r},${this.g},${this.b},0.5)`
+			this.update   = function update() {
+				if(this.distFromStart() < h/2) {
+					this.position.x += this.velocity.x;
+					this.position.y += this.velocity.y;
+					this.velocity.x  = wind.getWind(this.windDelay).x * this.windMult;
+					this.velocity.y  = wind.getWind(this.windDelay).y * this.windMult;
+				} else {
+					this.position.x += this.velocity.x;
+					this.velocity.x  = wind.getWind(this.windDelay).x * this.windMult;
+				}
+			};
+			this.distFromStart = function distFromStart() {
+				var point1 = [this.position.x, this.position.y + this.height / 2],
+					point2 = [this.initX, h];
+				return Math.sqrt(Math.pow(point2[1]-point1[1],2) + Math.pow(point2[0]-point1[0],2));
+			};
+			this.show = function show() {
+				var fillStyle = ctx.fillStyle;
+				ctx.fillStyle = this.color;
+				ctx.fillRect(this.position.x - this.width / 2, this.position.y - this.height / 2, this.width, this.height);
+				ctx.fillStyle = 'rgba(0,0,0,0.1)';
+				ctx.beginPath();
+				ctx.moveTo(this.position.x, this.position.y + this.height / 2);
+				ctx.lineTo(this.initX, h);
+				ctx.stroke();
+				ctx.fillStyle = fillStyle;
+			};
+		}
+		var c = document.querySelector('canvas'),
+			ctx = c.getContext('2d');
+		var w = c.width = window.innerWidth,
+			h = c.height = window.innerHeight;
+		var frames = 0;
+		var wind = new Wind(),
+			balloons = [];
+		var TEMP_Y = window.innerHeight,
+			TEMP_X = window.innerWidth / 2;
+		for(var i = 0; i < 16; i++) {
+			balloons[i] = new Balloon(Math.floor(Math.random() * 1000));
+		}
+		c.ontouchstart = c.onmousedown = function(e) {
+			var x = 'changedTouches' in e ? e.changedTouches[0].pageX : e.pageX;
+			var y = 'changedTouches' in e ? e.changedTouches[1].pageY : e.pageY;
+			for(var bid in balloons) {
+				var b = balloons[bid];
+				var x2 = b.position.x;
+				var y2 = b.position.y;
+				if ( Math.sqrt(Math.pow(x2-x,2) + Math.pow(y2-y,2)) < (b.height + b.width) / 2 ) {
+					balloons[bid] = new Balloon();
+					return;
+				};
+			}
+		}
+		c.style.position = 'absolute';
+		c.style.left = c.style.top = 0;
+		var interval = setInterval(function newFrame() {
+			frames ++;
+			ctx.clearRect(0, 0, w, h);
+			wind.updateWind();
+			for(var balloon of balloons) {
+				balloon.update();
+				balloon.show  ();
+			}
+		}, 15);
+	</script>
+	<div style="display:table;width:100vw;height:10vh;position:absolute;left:0;top:0;font-family:Helvetica NeueUI, Helvetica Neue, Helvetica;">
+		<div style="display:table-cell;vertical-align:middle;">
+			<div style="margin-left:auto;margin-right:auto;"><center style='font-size: 6.5vmin;font-weight:bolder;color:#777;height:10vh;line-height:10vh;text-shadow:#FFF 0 1px 0;background-image:-webkit-gradient(linear,left top, left bottom,from(#FFF),color-stop(85%, #AAB));background-image:-webkit-linear-gradient(#FFF,#AAB 85%);background-image:-o-linear-gradient(#FFF,#AAB 85%);background-image:linear-gradient(#FFF,#AAB 85%);border:solid 1px black;border-top-left-radius:5vmin;border-top-right-radius:5vmin'>Happy Birthday</center><center style='position:absolute;top:calc(10vh+3px);border: solid 1px black;width:100vw;height:20vh;background:-webkit-gradient(linear, left top, right top, from(#D1D5DE), color-stop(50%, #D1D5DE), color-stop(50%, #CED2DD), to(#CED2DD));background:-webkit-linear-gradient(left, #D1D5DE 0%, #D1D5DE 50%, #CED2DD 50%, #CED2DD 100%);background:-o-linear-gradient(left, #D1D5DE 0%, #D1D5DE 50%, #CED2DD 50%, #CED2DD 100%);background:linear-gradient(to right, #D1D5DE 0%, #D1D5DE 50%, #CED2DD 50%, #CED2DD 100%);-webkit-background-size: 1% 100%;background-size: 1% 100%; background-repeat: repeat-x;line-height:10vh'>Happy Birthday Mom!<br/>This time, the balloons float *upward*!</center></div>
+		</div>
+	</div>
+</body>
+</html>
