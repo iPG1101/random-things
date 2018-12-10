@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Diff</title>
+    <script type="text/javascript">
+	window.onerror=function(){alert(Array.from(arguments))};
+    var reader = new FileReader;
+    function readText(filePath) {
+        var output = ""; //placeholder for text output
+        if(filePath.files && filePath.files[0]) {           
+            reader.onload = function (e) {
+                output = e.target.result;
+                displayContents(output);
+            };
+            reader.readAsText(filePath.files[0]);
+        } else return false;
+    }
+	var i = 1;
+    function displayContents(txt) {
+        var el = document.getElementById('main' + (i++)); 
+        el.innerHTML = txt;
+    }
+	function find() {
+		let JSON1 = JSON.parse(document.querySelector('#main1').innerText);
+		let JSON2 = JSON.parse(document.querySelector('#main2').innerText);
+		var xyz = 0;
+		setInterval(()=>{
+			xyz++;
+			if(xyz > JSON1.length || xyz > JSON2.length) return;
+			if(JSON1[xyz] != JSON2[xyz]) {
+				let color = 0;
+				if(JSON1[xyz] != JSON2[xyz]) color ++;
+				if(JSON1[xyz] == 0 && JSON2[xyz] == 9) color ++;
+				let colors = ['#F00', '#FF0', '#0F0'];
+				document.querySelector('#lvlpos').innerHTML += '<a style="color: '+colors[color]+'">' + xyz.toString(16) + '</a> &zwj; ';
+			} else {
+				document.title = xyz.toString(16);
+			};
+		});
+	};
+</script>
+</head>
+<body>
+    <div id="container">    
+        <input type="file" onchange='readText(this)' />
+        <br/>
+		<h2>Usage:</h2>
+		<div id="usage">
+			Click the upload file button above, upload a savestate from my emulator (basically a javascript array with all the bytes as decimal numbers) while paused at level 0. Then do the same for level 9. Click the *click* button and it will loop through and find the probable RAM Address for the level (which I just ran for my NTSC ROM and got 0x44, 0x47, 0x64 and 0x67- the green ones are the ones you need, yellow are just differences in between RAM)
+		</div>
+        <hr/>   
+        <h3>JSON1:</h3>
+        <div id="main1">
+            <!---->
+        </div>
+        <hr/>   
+        <h3>JSON2:</h3>
+        <div id="main2">
+            <!---->
+        </div>
+        <hr/>   
+        <h3>Possible Level Locations:</h3>
+        <div id="lvlpos">
+            <!--I used this to unlock level 24 - trust me it is not possible-->
+        </div>
+        <hr/>
+		<h3>Find</h3>
+		<button onclick='find()'>*Click*</button>
+    </div>
+</body>
+</html>
